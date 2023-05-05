@@ -1,8 +1,16 @@
-let Student = require('../models/Student')
+let Student = require('../models/Student');
+const { validationResult } = require("express-validator");
 
 const saveStudent = async(req, res) => {
   
-    const {firstName, familyName, dob} = req.body;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(422).json({ errors: errors.array() });
+    }
+    const firstName = req.body.firstName;
+    const familyName = req.body.familyName;
+    const dob = req.body.dob;
+    
     let studentToSave = new Student({
         firstName,
         familyName,
