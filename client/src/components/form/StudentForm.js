@@ -22,15 +22,11 @@ const StudentForm = (props) => {
   });
   const [error, setError] = useState();
   const [ageError, setAgeError] = useState();
-  
+
   const setFormInput = (key, value) => {
     const isValid = value ? false : true;
-    let convertedValue;
-    if (value.trim()) {
-        convertedValue = capitalizeFirstLetter(value.trim());
-    }
     setShouldValidate({ ...shouldValidate, [key]: isValid });
-    setFormState({ ...formState, [key]: convertedValue });
+    setFormState({ ...formState, [key]: value });
   };
 
   const setDobInput = (key, dob) => {
@@ -41,9 +37,15 @@ const StudentForm = (props) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const isFormValid = validateForm(formState);
-    const isDOBValid = CalculateAge(formState.dob)
-    if (isFormValid && isDOBValid) {
+    const sanitizedFormState = trimFields();
+    const isFormValid = validateForm(sanitizedFormState);
+    const isDOBValid = CalculateAge(formState.dob);
+    if (!isFormValid) {
+      setError("All fields have to be filled");
+    }
+    if (!isDOBValid) {
+      setAgeError("Student has to be 10 years old or older");
+    } else if (isFormValid && isDOBValid) {
       const clearedFormState = {
         firstName: "",
         familyName: "",
@@ -52,63 +54,66 @@ const StudentForm = (props) => {
       setError("");
       setAgeError("");
       setFormState(clearedFormState);
-      props.handleSubmit(formState);
-    } else if (!isFormValid){
-      setError("All fields have to be filled");
-      setAgeError('')
-    } else {
-        setAgeError("Student has to be 10 years old or older");
-        setError('');
+      const updatedFormState = {...formState, firstName: capitalizeFirstLetter(formState.firstName), familyName: capitalizeFirstLetter(formState.familyName) }
+      props.handleSubmit(updatedFormState);
     }
+  };
+
+  const trimFields = () => {
+    const newFormState = {
+      ...formState,
+      firstName: formState.firstName.trim(),
+      familyName: formState.familyName.trim(),
+    };
+    return newFormState;
   };
 
   return (
     <>
-      <Box sx={{maxWidth: 650, margin: "auto"}}>
+      <Box sx={{ maxWidth: 650, margin: "auto" }}>
         <ErrorMessage message={error} />
       </Box>
-      <Box sx={{maxWidth: 650, margin: "auto"}}>
+      <Box sx={{ maxWidth: 650, margin: "auto" }}>
         <ErrorMessage message={ageError} />
       </Box>
-        <Grid item sm={12} xs={12}>
-          <TextField
-            error={shouldValidate.firstName}
-            label="First Name"
-            value={formState.firstName || ""}
+      <Grid item sm={12} xs={12}>
+        <TextField
+          error={shouldValidate.firstName}
+          label="First Name"
+          value={formState.firstName || ""}
+          required
+          variant="outlined"
+          fullWidth
+          onChange={(event) => setFormInput("firstName", event.target.value)}
+        />
+      </Grid>
+      <Grid item sm={12} xs={12}>
+        <TextField
+          error={shouldValidate.familyName}
+          label="Family Name"
+          value={formState.familyName || ""}
+          required
+          variant="outlined"
+          fullWidth
+          onChange={(event) => setFormInput("familyName", event.target.value)}
+        />
+      </Grid>
+      <Grid item>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+          <DatePicker
+            label="Date of Birth"
             required
-            variant="outlined"
-            fullWidth
-            onChange={(event) => setFormInput("firstName", event.target.value)}
+            value={formState.dob || null}
+            onChange={(date) => setDobInput("dob", Date.parse(date))}
+            error={shouldValidate.dob}
           />
-        </Grid>
-        <Grid item sm={12} xs={12}>
-          <TextField
-            error={shouldValidate.familyName}
-            label="Family Name"
-            value={formState.familyName || ""}
-            required
-            variant="outlined"
-            fullWidth
-            onChange={(event) => setFormInput("familyName", event.target.value)}
-          />
-        </Grid>
-        <Grid item>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker
-              label="Date of Birth"
-              required
-              value={formState.dob || null}
-              onChange={(date) => setDobInput("dob", Date.parse(date))}
-              error={shouldValidate.dob}
-            />
-          </LocalizationProvider>
-        </Grid>
-        <Grid item xs={12} sm={12}>
-          <Button variant="contained" onClick={handleSubmit}>
-            Submit
-          </Button>
-        </Grid>
-     
+        </LocalizationProvider>
+      </Grid>
+      <Grid item xs={12} sm={12}>
+        <Button variant="contained" onClick={handleSubmit}>
+          Submit
+        </Button>
+      </Grid>
     </>
   );
 };
