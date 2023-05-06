@@ -34,7 +34,6 @@ const StudentForm = (props) => {
   };
 
   const setDobInput = (key, dob) => {
-    console.log(dob)
     const isEmpty = dob ? false : true;
     setShouldValidate({ ...shouldValidate, [key]: isEmpty });
     setFormState({ ...formState, [key]: dob });
