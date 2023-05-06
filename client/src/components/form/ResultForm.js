@@ -1,16 +1,17 @@
 import {
+  Box,
   Button,
   FormControl,
+  Grid,
   InputLabel,
   MenuItem,
   Select,
-  Box,
-  Grid,
 } from "@mui/material";
 
+import ErrorMessage from "../ErrorMessage";
+import capitalizeFirstLetter from "../../utils/capitalizeFirstLetter";
 import { useState } from "react";
 import validateForm from "../../utils/validateForm";
-import ErrorMessage from "../ErrorMessage";
 
 const SCORES = ["A", "B", "C", "D", "F"];
 
@@ -29,8 +30,9 @@ const ResultForm = (props) => {
 
   const setSelectValue = (key, value) => {
     const isValid = value ? false : true;
+    const convertedValue = capitalizeFirstLetter(value);
     setShouldValidate({ ...shouldValidate, [key]: isValid });
-    setFormState({ ...formState, [key]: value });
+    setFormState({ ...formState, [key]: convertedValue });
   };
 
   const handleSubmit = (e) => {
