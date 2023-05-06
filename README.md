@@ -1,6 +1,6 @@
 # srms
 # Student Result Management System app
-For the purpose of this test I created a disposable mongodb account with a disposable email, that is why I have mongodb url in the file exposed - after some time it will be destroyed. Otherwise I would use .env file/ env variable on a hosting account.
+For the purpose of this test I created a disposable mongodb account with a disposable email, that is why I have mongodb url in the file exposed - after some time it will be destroyed. Otherwise I would use .env file/ env variable on a hosting account. There is no strict validation since there are no requirements; for the layout and components I used Material UI.
 # To run the app:
 # clone the repo
 # go to /client and run npm i - client runs on port:3000
