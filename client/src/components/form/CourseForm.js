@@ -1,8 +1,9 @@
-import Button from "@mui/material/Button";
-import { TextField, Grid, Box } from "@mui/material";
+import { Box, Grid, TextField } from "@mui/material";
 
-import { useState } from "react";
+import Button from "@mui/material/Button";
 import ErrorMessage from "../ErrorMessage";
+import capitalizeFirstLetter from '../../utils/capitalizeFirstLetter';
+import { useState } from "react";
 
 const CourseForm = (props) => {
   const [error, setError] = useState("");
@@ -21,10 +22,6 @@ const CourseForm = (props) => {
       setError("Title field cannot be empty");
     }
   };
-
-  const capitalizeFirstLetter = (value) => {
-    return value.charAt(0).toUpperCase() + value.slice(1);
-  }
 
   const setFormInput = (key, value) => {
     const isValid = value ? false : true;
