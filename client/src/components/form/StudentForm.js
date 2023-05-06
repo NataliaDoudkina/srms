@@ -1,11 +1,11 @@
-import { Button, Grid, TextField, Box } from "@mui/material";
+import { Box, Button, Grid, TextField } from "@mui/material";
 
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-
 import CalculateAge from "../../utils/CalculateAge";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import ErrorMessage from "../ErrorMessage";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import capitalizeFirstLetter from "../../utils/capitalizeFirstLetter";
 import { useState } from "react";
 import validateForm from "../../utils/validateForm";
 
@@ -21,11 +21,12 @@ const StudentForm = (props) => {
     dob: false,
   });
   const [error, setError] = useState();
-
+  const [ageError, setAgeError] = useState();
   const setFormInput = (key, value) => {
     const isValid = value ? false : true;
+    const convertedValue = capitalizeFirstLetter(value);
     setShouldValidate({ ...shouldValidate, [key]: isValid });
-    setFormState({ ...formState, [key]: value });
+    setFormState({ ...formState, [key]: convertedValue });
   };
 
   const setDobInput = (key, dob) => {
@@ -33,7 +34,7 @@ const StudentForm = (props) => {
     setShouldValidate({ ...shouldValidate, [key]: isValid });
     let isOver10YearsOld = CalculateAge(dob);
     if (!isOver10YearsOld) {
-      setError("Student has to be 10 years old or older");
+      setAgeError("Student has to be 10 years old or older");
     } else {
       setError("");
       setFormState({ ...formState, [key]: dob });
@@ -61,6 +62,9 @@ const StudentForm = (props) => {
     <>
       <Box sx={{maxWidth: 650, margin: "auto"}}>
         <ErrorMessage message={error} />
+      </Box>
+      <Box sx={{maxWidth: 650, margin: "auto"}}>
+        <ErrorMessage message={ageError} />
       </Box>
         <Grid item sm={12} xs={12}>
           <TextField
