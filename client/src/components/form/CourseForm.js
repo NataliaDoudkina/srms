@@ -14,9 +14,9 @@ const CourseForm = (props) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (title) {
+    if (title.trim()) {
       setTitle("");
-      const formattedTitle = capitalizeFirstLetter(title);
+      const formattedTitle = capitalizeFirstLetter(title.trim());
       props.handleSubmit(formattedTitle);
     } else {
       setError("Title field cannot be empty");

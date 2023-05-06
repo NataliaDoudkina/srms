@@ -22,39 +22,44 @@ const StudentForm = (props) => {
   });
   const [error, setError] = useState();
   const [ageError, setAgeError] = useState();
+  
   const setFormInput = (key, value) => {
     const isValid = value ? false : true;
-    const convertedValue = capitalizeFirstLetter(value);
+    let convertedValue;
+    if (value.trim()) {
+        convertedValue = capitalizeFirstLetter(value.trim());
+    }
     setShouldValidate({ ...shouldValidate, [key]: isValid });
     setFormState({ ...formState, [key]: convertedValue });
   };
 
   const setDobInput = (key, dob) => {
-    const isValid = dob ? false : true;
-    setShouldValidate({ ...shouldValidate, [key]: isValid });
-    let isOver10YearsOld = CalculateAge(dob);
-    if (!isOver10YearsOld) {
-      setAgeError("Student has to be 10 years old or older");
-    } else {
-      setError("");
-      setFormState({ ...formState, [key]: dob });
-    }
+    console.log(dob)
+    const isEmpty = dob ? false : true;
+    setShouldValidate({ ...shouldValidate, [key]: isEmpty });
+    setFormState({ ...formState, [key]: dob });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setError("");
     const isFormValid = validateForm(formState);
-    if (isFormValid) {
+    const isDOBValid = CalculateAge(formState.dob)
+    if (isFormValid && isDOBValid) {
       const clearedFormState = {
         firstName: "",
         familyName: "",
         dob: "",
       };
+      setError("");
+      setAgeError("");
       setFormState(clearedFormState);
       props.handleSubmit(formState);
-    } else {
+    } else if (!isFormValid){
       setError("All fields have to be filled");
+      setAgeError('')
+    } else {
+        setAgeError("Student has to be 10 years old or older");
+        setError('');
     }
   };
 
